@@ -1,7 +1,6 @@
-from random import sample
-
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
+from tkinter import messagebox
 
 window = ttk.Window(themename="solar")
 window.title("Password Manager")
@@ -18,20 +17,26 @@ def add_data():
     log.append(E1.get())
     log.append(E2.get())
     log.append(E3.get())
-    try:
-        with open("pass.txt", 'a+') as f:
+    if len(log[0]) == 0 or len(log[2]) == 0:
+        messagebox.showinfo(title="message", message="Please fill all the information")
+        log.clear()
+    else:
+        is_ok = messagebox.askokcancel(title="conformation",
+                                       message=f"please conform the website name:{log[0]} and password:{log[2]}  ")
 
-            pass_w = f.read()
-            for s in log:
-                f.write(s)
-                f.write(" | ")
-            f.write("\n")
-    except FileNotFoundError:
-        text = None
-
-    log.clear()
-    E1.delete(0, END)
-    E3.delete(0, END)
+        if is_ok:
+            try:
+                with open("pass.txt", 'a+') as f:
+                    for s in log:
+                        f.write(f" {s} |")
+                    f.write("\n")
+                    E1.delete(0, END)
+                    E3.delete(0, END)
+                    log.clear()
+            except FileNotFoundError:
+                text = None
+        else:
+            messagebox.showinfo(title="Hi", message="Please retry")
 
 
 # ---------------------------- UI SETUP ------------------------------- #
