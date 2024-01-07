@@ -2,7 +2,9 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
 import random
-#import pyperclip
+import json
+
+# import pyperclip
 
 window = ttk.Window(themename="solar")
 window.title("Password Manager")
@@ -32,8 +34,7 @@ def add_password():
 
     password = "".join(password_list)
     password_one.set(password)
-    #pyperclip.copy(password_one)
-
+    # pyperclip.copy(password_one)
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
@@ -44,26 +45,32 @@ def add_data():
     log.append(E1.get())
     log.append(E2.get())
     log.append(E3.get())
+
+    new_data = {
+        log[0]: {
+            "email": log[1],
+            "password": log[2]
+        }
+
+    }
     if len(log[0]) == 0 or len(log[2]) == 0:
         messagebox.showinfo(title="message", message="Please fill all the information")
         log.clear()
     else:
-        is_ok = messagebox.askokcancel(title="conformation",
-                                       message=f"please conform the website name:{log[0]} and password:{log[2]}  ")
-
-        if is_ok:
-            try:
-                with open("pass.txt", 'a+') as f:
-                    for s in log:
-                        f.write(f" {s} |")
-                    f.write("\n")
-                    E1.delete(0, END)
-                    E3.delete(0, END)
-                    log.clear()
-            except FileNotFoundError:
-                text = None
+        try:
+            with open("pass.json", 'r') as data1:
+                data2 = json.load(data1)
+        except FileNotFoundError:
+            with open("pass.json", 'w') as data1:
+                json.dump(data2, data1, indent=4)
         else:
-            messagebox.showinfo(title="Hi", message="Please retry")
+            data2.update(new_data)
+            with open("pass.json", 'w') as data1:
+                json.dump(data2, data1, indent=4)
+        finally:
+            E1.delete(0, END)
+            E3.delete(0, END)
+            log.clear()
 
 
 # ---------------------------- UI SETUP ------------------------------- #
