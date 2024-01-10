@@ -79,15 +79,21 @@ def add_data():
 
 # ------------------------------Search-------------------------------------#
 def find_password():
-    with open("pass.json", "r") as pass_one:
-        password_data = json.load(pass_one)
-        if E1.get() in password_data:
-            text = E1.get()
-            x = password_data[text]
-            messagebox.showinfo(title="The data you need", message=f"email:{x['email']} password:{x['password']} ")
-            print(x['email'], x["password"])
+    webb_entry = E1.get()
+    try:
+        with open("pass.json", "r") as pass_one:
+            password_data = json.load(pass_one)
+    except FileNotFoundError:
+        messagebox.showinfo(title='error', message='File not founf')
+    else:
+        if webb_entry in password_data:
+            email = password_data[webb_entry]['email']
+            password = password_data[webb_entry]['password']
+            messagebox.showinfo(title="The data you need", message=f"email:{email} password:{password} ")
+
         else:
-            messagebox.showinfo(title="the data you need",message=f"{E1.get()} not found")
+            messagebox.showinfo(title="the data you need", message=f"{webb_entry} not found")
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
