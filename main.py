@@ -59,19 +59,35 @@ def add_data():
     else:
         try:
             with open("pass.json", 'r') as data1:
+                # Reading the old data
                 data2 = json.load(data1)
+
         except FileNotFoundError:
             with open("pass.json", 'w') as data1:
+                # updating the old data wit new dat
                 json.dump(data2, data1, indent=4)
         else:
             data2.update(new_data)
             with open("pass.json", 'w') as data1:
+                # saving update data
                 json.dump(data2, data1, indent=4)
         finally:
             E1.delete(0, END)
             E3.delete(0, END)
             log.clear()
 
+
+# ------------------------------Search-------------------------------------#
+def find_password():
+    with open("pass.json", "r") as pass_one:
+        password_data = json.load(pass_one)
+        if E1.get() in password_data:
+            text = E1.get()
+            x = password_data[text]
+            messagebox.showinfo(title="The data you need", message=f"email:{x['email']} password:{x['password']} ")
+            print(x['email'], x["password"])
+        else:
+            messagebox.showinfo(title="the data you need",message=f"{E1.get()} not found")
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -98,8 +114,10 @@ b1 = ttk.Button(frame1, text="Generate Password", style="info", command=add_pass
 b1.grid(row=4, column=2, sticky='W', pady=2, padx=5)
 b2 = ttk.Button(frame1, text="Add", width=36, style="info", command=add_data)
 b2.grid(row=5, column=1, columnspan=2, sticky='w', pady=10, padx=5)
+b3 = ttk.Button(frame1, text="Search", width=16, style="info", command=find_password)
+b3.grid(row=2, column=2, columnspan=2, sticky='w', pady=10, padx=5)
 
-E1 = ttk.Entry(frame1, width=35, style="light")
+E1 = ttk.Entry(frame1, width=21, style="light")
 E1.grid(row=2, column=1, columnspan=2, sticky='w', pady=5, padx=5)
 E1.focus()
 
